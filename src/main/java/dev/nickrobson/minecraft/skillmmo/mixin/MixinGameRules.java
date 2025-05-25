@@ -2,6 +2,7 @@ package dev.nickrobson.minecraft.skillmmo.mixin;
 
 import dev.nickrobson.minecraft.skillmmo.config.SkillMmoConfig;
 import dev.nickrobson.minecraft.skillmmo.util.SkillMmoBooleanGameRuleSetter;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.world.GameRules;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,11 +21,18 @@ public abstract class MixinGameRules {
 
     @Inject(method = "<init>()V", at = @At("RETURN"))
     private void onRegisterGameRule(CallbackInfo ci) {
-        if (SkillMmoConfig.getConfig().enableDoLimitedCraftingGameruleInAllNewWorlds) {
-            GameRules.Rule<?> rule = this.rules.get(GameRules.DO_LIMITED_CRAFTING);
-            if (rule instanceof SkillMmoBooleanGameRuleSetter setter) {
-                setter.skillMmo$setValue(true);
+        // 安全检查：确保配置已经被注册
+        try {
+            if (AutoConfig.getConfigHolder(SkillMmoConfig.class) != null && 
+                SkillMmoConfig.getConfig().enableDoLimitedCraftingGameruleInAllNewWorlds) {
+                GameRules.Rule<?> rule = this.rules.get(GameRules.DO_LIMITED_CRAFTING);
+                if (rule instanceof SkillMmoBooleanGameRuleSetter setter) {
+                    setter.skillMmo$setValue(true);
+                }
             }
+        } catch (IllegalArgumentException e) {
+            // 配置尚未注册，跳过此操作
+            // 这在模组初始化期间是正常的
         }
     }
 
