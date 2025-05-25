@@ -29,7 +29,7 @@ public class SkillMmoMod implements ModInitializer {
         logger.info("Starting {}...", MOD_VERSION_STRING);
 
         // 确保配置类在使用前注册
-        SkillMmoConfig config = AutoConfig.register(SkillMmoConfig.class, JanksonConfigSerializer::new).getConfig();
+        AutoConfig.register(SkillMmoConfig.class, JanksonConfigSerializer::new);
 
         ExperienceLevelEquation.setInstance(new ExperienceLevelEquation(config.expBaseCost, config.expMultiplier, config.expLevelExponent));
 

@@ -23,16 +23,21 @@ public abstract class MixinGameRules {
     private void onRegisterGameRule(CallbackInfo ci) {
         // 安全检查：确保配置已经被注册
         try {
-            if (AutoConfig.getConfigHolder(SkillMmoConfig.class) != null && 
-                SkillMmoConfig.getConfig().enableDoLimitedCraftingGameruleInAllNewWorlds) {
-                GameRules.Rule<?> rule = this.rules.get(GameRules.DO_LIMITED_CRAFTING);
-                if (rule instanceof SkillMmoBooleanGameRuleSetter setter) {
-                    setter.skillMmo$setValue(true);
+            // 首先检查配置持有者是否存在
+            if (AutoConfig.getConfigHolder(SkillMmoConfig.class) != null) {
+                // 然后再获取配置实例并检查相关选项
+                SkillMmoConfig config = SkillMmoConfig.getConfig();
+                if (config.enableDoLimitedCraftingGameruleInAllNewWorlds) {
+                    GameRules.Rule<?> rule = this.rules.get(GameRules.DO_LIMITED_CRAFTING);
+                    if (rule instanceof SkillMmoBooleanGameRuleSetter setter) {
+                        setter.skillMmo$setValue(true);
+                    }
                 }
             }
         } catch (IllegalArgumentException e) {
             // 配置尚未注册，跳过此操作
             // 这在模组初始化期间是正常的
+            System.err.println("SkillMMO Mod: SkillMmoConfig not yet registered when GameRules initialized. Skipping gamerule modification. Error: " + e.getMessage());
         }
     }
 
