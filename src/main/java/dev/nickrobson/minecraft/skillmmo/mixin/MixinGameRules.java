@@ -34,7 +34,7 @@ public abstract class MixinGameRules {
                     }
                 }
             }
-        } catch (IllegalArgumentException e) {
+        } catch (RuntimeException e) { // 修改此处，捕获 RuntimeException
             // 配置尚未注册，跳过此操作
             // 这在模组初始化期间是正常的
             System.err.println("SkillMMO Mod: SkillMmoConfig not yet registered when GameRules initialized. Skipping gamerule modification. Error: " + e.getMessage());
