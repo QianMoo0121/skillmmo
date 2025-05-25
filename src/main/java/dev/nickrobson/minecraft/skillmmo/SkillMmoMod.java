@@ -30,6 +30,8 @@ public class SkillMmoMod implements ModInitializer {
 
         // 确保配置类在使用前注册
         AutoConfig.register(SkillMmoConfig.class, JanksonConfigSerializer::new);
+        // Get the config instance
+        SkillMmoConfig config = AutoConfig.getConfigHolder(SkillMmoConfig.class).getConfig();
 
         ExperienceLevelEquation.setInstance(new ExperienceLevelEquation(config.expBaseCost, config.expMultiplier, config.expLevelExponent));
 
