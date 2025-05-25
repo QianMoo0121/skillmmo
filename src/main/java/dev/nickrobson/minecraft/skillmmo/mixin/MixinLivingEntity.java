@@ -17,7 +17,8 @@ public class MixinLivingEntity {
                     value = "INVOKE_ASSIGN",
                     target = "Lnet/minecraft/entity/LivingEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;",
                     ordinal = 0
-            )
+            ),
+            ordinal = 0 // 明确指定要修改的变量的序号
     )
     private ItemStack skillMmo$tryUseTotem(ItemStack original) {
         // If the player is trying to use a totem but doesn't have the necessary level, pretend they're not using a totem!
