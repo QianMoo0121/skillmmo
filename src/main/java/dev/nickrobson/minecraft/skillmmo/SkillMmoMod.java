@@ -27,58 +27,21 @@ public class SkillMmoMod implements ModInitializer {
     @Override
     public void onInitialize() {
         logger.info("Starting {}...", MOD_VERSION_STRING);
-        SkillMmoConfig config = null;
-        try {
-            logger.info("Registering SkillMmoConfig...");
-            config = AutoConfig.register(SkillMmoConfig.class, JanksonConfigSerializer::new).getConfig();
-            logger.info("SkillMmoConfig registered successfully.");
-        } catch (Exception e) {
-            logger.error("Failed to register SkillMmoConfig: ", e);
-            return; // 如果配置注册失败，终止初始化过程
-        }
 
-        try {
-            ExperienceLevelEquation.setInstance(new ExperienceLevelEquation(config.expBaseCost, config.expMultiplier, config.expLevelExponent));
-        } catch (Exception e) {
-            logger.error("Failed to set ExperienceLevelEquation instance: ", e);
-            return;
-        }
+        // 确保配置类在使用前注册
+        SkillMmoConfig config = AutoConfig.register(SkillMmoConfig.class, JanksonConfigSerializer::new).getConfig();
 
-        try {
-            SkillMmoServerNetworking.register();
-        } catch (Exception e) {
-            logger.error("Failed to register SkillMmoServerNetworking: ", e);
-            return;
-        }
+        ExperienceLevelEquation.setInstance(new ExperienceLevelEquation(config.expBaseCost, config.expMultiplier, config.expLevelExponent));
 
-        try {
-            ResourceManagerHelper.get(ResourceType.SERVER_DATA)
-                   .registerReloadListener(new SkillMmoResourceLoader());
-        } catch (Exception e) {
-            logger.error("Failed to register SkillMmoResourceLoader: ", e);
-            return;
-        }
+        SkillMmoServerNetworking.register();
 
-        try {
-            SkillMmoCommands.register(); // must be after resource loading
-        } catch (Exception e) {
-            logger.error("Failed to register SkillMmoCommands: ", e);
-            return;
-        }
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA)
+                .registerReloadListener(new SkillMmoResourceLoader());
 
-        try {
-            PlayerSkillManager.getInstance().register();
-        } catch (Exception e) {
-            logger.error("Failed to register PlayerSkillManager: ", e);
-            return;
-        }
+        SkillMmoCommands.register(); // must be after resource loading
 
-        try {
-            PlayerSkillUnlockManager.getInstance().register();
-        } catch (Exception e) {
-            logger.error("Failed to register PlayerSkillUnlockManager: ", e);
-            return;
-        }
+        PlayerSkillManager.getInstance().register();
+        PlayerSkillUnlockManager.getInstance().register();
 
         logger.info("Ready! Time to test your mettle!");
     }
